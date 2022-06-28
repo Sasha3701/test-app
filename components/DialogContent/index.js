@@ -11,8 +11,8 @@ export const DialogContent = ({ onClose }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorObj, setErrorObj] = useState({ email: false, password: false });
-  const { login, error, clearError } = useAuth();
-  const { fetchCards, fetchCardsCount } = useCards();
+  const { login, error, clearError, loading } = useAuth();
+  const { fetchCards, fetchCardsCount, page, limit } = useCards();
 
   useEffect(() => {
     return () => clearError();
@@ -21,7 +21,7 @@ export const DialogContent = ({ onClose }) => {
   const handleButtonClick = async () => {
     const data = await login(email, password);
     if (data?.success) {
-      Promise.all([fetchCards(true), fetchCardsCount(true)]);
+      Promise.all([fetchCards(page, limit, true), fetchCardsCount(true)]);
       onClose();
     }
   };
@@ -91,6 +91,7 @@ export const DialogContent = ({ onClose }) => {
         onClick={handleButtonClick}
         intent="primary"
         text="Вход"
+        loading={loading}
         fill
       />
     </div>

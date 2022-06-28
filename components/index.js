@@ -1,3 +1,5 @@
 import { Header } from "./Header";
+import { Cards } from "./Cards";
+import { Pagination } from "./Pagination";
 
-export { Header };
+export { Header, Cards, Pagination };

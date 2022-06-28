@@ -46,8 +46,24 @@ export const getBreakpoint = (innerWidth) => {
 };
 
 export const validate = (type, value) => {
-  if (type === 'email') {
-      return /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(value)
+  if (type === "email") {
+    return /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(value);
   }
   return true;
+};
+
+export const range = (start, end) => {
+  var ans = [];
+  for (let i = start; i <= end; i++) {
+    ans.push(i);
+  }
+  return ans;
+};
+
+export const getArrPage = (count, limit, page, countButton) => {
+  const last = Math.trunc(count / limit);
+  const start = countButton - page <= 0 ? 3 + page - countButton : 1;
+  const end =
+    countButton - page <= 0 ? (page === last ? last : 3 + page) : countButton;
+  return range(start, end);
 };

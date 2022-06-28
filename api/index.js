@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setCookie } from "../utils";
+import { setCookie, getCookie } from "../utils";
 
 export const myInstance = axios.create({
   baseURL: "http://api.interview.michaelknyazev.com/api/v1/",

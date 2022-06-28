@@ -7,11 +7,11 @@ export const CardsProvider = ({ children, currentPage, currentLimit }) => {
   const [cards, setCards] = useState(null);
   const [page, setPage] = useState(() => +currentPage || 1);
   const [count, setCount] = useState(null);
-  const [limit, setLimit] = useState(() => +currentLimit || 10);
+  const [limit, setLimit] = useState(() => +currentLimit || 9);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchCards = async (firstLoad = false) => {
+  const fetchCards = async (page, limit, firstLoad = false) => {
     try {
       setLoading(true);
       const newCards = await api.getCards(page, limit);
@@ -25,6 +25,8 @@ export const CardsProvider = ({ children, currentPage, currentLimit }) => {
         } catch (e) {
           setError(e.message);
         }
+      } else {
+        throw new Error(e);
       }
     } finally {
       setLoading(false);
@@ -44,12 +46,29 @@ export const CardsProvider = ({ children, currentPage, currentLimit }) => {
         } catch (e) {
           setError(e.message);
         }
+      } else {
+        throw new Error(e);
       }
     }
   };
 
+  const changePage = (page) => {
+    const newPage =
+      page <= 0
+        ? 1
+        : page >= Math.trunc(count / limit)
+        ? Math.trunc(count / limit)
+        : page;
+    setPage(newPage);
+    fetchCards(newPage, limit);
+  };
+
   useEffect(() => {
-    Promise.all([fetchCards(true), fetchCardsCount(true)]);
+    Promise.all([fetchCards(page, limit, true), fetchCardsCount(true)]).catch(() => {
+      api.refresh().then(() => {
+        Promise.all([fetchCards(page, limit, true), fetchCardsCount(true)]);
+      });
+    });
   }, []);
 
   return (
@@ -59,10 +78,12 @@ export const CardsProvider = ({ children, currentPage, currentLimit }) => {
         count,
         limit,
         error,
+        page,
         loading,
         fetchCards,
         fetchCards,
         fetchCardsCount,
+        changePage,
       }}
     >
       {children}

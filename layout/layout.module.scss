@@ -1,0 +1,7 @@
+@import '../styles/variables.module.scss';
+
+.main {
+    padding: 2rem 2rem;
+    width: 100vw;
+    height: calc(100vh - $header-height);
+}
